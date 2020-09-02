@@ -674,7 +674,21 @@ nvm_strip_path() {
     -e "s#${NVM_DIR}/versions/[^/]*/[^/]*${2-}[^:]*##g"
 }
 
+nvm_get_rvm_path() {
+  nvm_echo "${1-}" | command sed \
+  -e 's/\(.*\):\/usr\/local\/sbin.*/\1/'
+}
+
+nvm_get_rest_path() {
+  nvm_echo "${1-}" | command sed \
+  -e 's/.*\(\/usr\/local\/sbin.*\)/\1/'
+}
+
 nvm_change_path() {
+  local RVMPATH
+  RVMPATH="$(nvm_get_rvm_path "${1-}")"
+  local RESTPATH
+  RESTPATH="$(nvm_get_rest_path "${1-}")"
   # if there’s no initial path, just return the supplementary path
   if [ -z "${1-}" ]; then
     nvm_echo "${3-}${2-}"
@@ -682,14 +696,14 @@ nvm_change_path() {
   # path
   elif ! nvm_echo "${1-}" | nvm_grep -q "${NVM_DIR}/[^/]*${2-}" \
     && ! nvm_echo "${1-}" | nvm_grep -q "${NVM_DIR}/versions/[^/]*/[^/]*${2-}"; then
-    nvm_echo "${3-}${2-}:${1-}"
+    nvm_echo "${RVMPATH}:${3-}${2-}:${RESTPATH}"
   # if the initial path contains BOTH an nvm path (checked for above) and
   # that nvm path is preceded by a system binary path, just prepend the
   # supplementary path instead of replacing it.
   # https://github.com/nvm-sh/nvm/issues/1652#issuecomment-342571223
   elif nvm_echo "${1-}" | nvm_grep -Eq "(^|:)(/usr(/local)?)?${2-}:.*${NVM_DIR}/[^/]*${2-}" \
     || nvm_echo "${1-}" | nvm_grep -Eq "(^|:)(/usr(/local)?)?${2-}:.*${NVM_DIR}/versions/[^/]*/[^/]*${2-}"; then
-    nvm_echo "${3-}${2-}:${1-}"
+    nvm_echo "${RVMPATH}:${3-}${2-}:${RESTPATH}"
   # use sed to replace the existing nvm path with the supplementary path. This
   # preserves the order of the path.
   else

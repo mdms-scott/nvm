@@ -1,3 +1,6 @@
+# Fork
+This is a fork of NVM that places its path _after_ RVM, because "oh just set the RVM ignore path errors flagg hurrr durrr!" isn't an acceptable solution to that issue.
+
 # Node Version Manager [![Build Status](https://travis-ci.org/nvm-sh/nvm.svg?branch=master)][3] [![nvm version](https://img.shields.io/badge/version-v0.35.3-yellow.svg)][4] [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/684/badge)](https://bestpractices.coreinfrastructure.org/projects/684)
 
 <!-- To update this table of contents, ensure you have run `npm install` then `npm run doctoc` -->
